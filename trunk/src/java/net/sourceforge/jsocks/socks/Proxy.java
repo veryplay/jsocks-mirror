@@ -25,6 +25,8 @@ public abstract class Proxy{
    protected int version;
 
    protected Proxy chainProxy = null;
+   protected int localSocketPort = 0;
+   protected int localSocketPortAssigned;
 
 
 //Protected static/class variables
@@ -279,14 +281,24 @@ public abstract class Proxy{
       return proxy;
    }
 
-
+   public int getLocalSocketPort() {
+     return localSocketPortAssigned;
+   }
+   
 //Protected Methods
 //=================
 
    protected void startSession()throws SocksException{
        try{
-         if(chainProxy == null)
-            proxySocket = new Socket(proxyIP,proxyPort);
+         if(chainProxy == null) {
+           if (localSocketPort > 0) {
+             proxySocket = new Socket(proxyIP, proxyPort, InetAddress.getLocalHost(), 
+                 localSocketPort);
+           } else {
+             proxySocket = new Socket(proxyIP, proxyPort);
+           }
+           localSocketPortAssigned = proxySocket.getLocalPort();
+         }
          else if(proxyIP != null)
             proxySocket = new SocksSocket(chainProxy,proxyIP,proxyPort);
          else
@@ -300,7 +312,7 @@ public abstract class Proxy{
          throw new SocksException(SOCKS_PROXY_IO_ERROR,""+io_ex);
        }
    }
-
+   
    protected abstract Proxy copy();
    protected abstract ProxyMessage formMessage(int cmd,InetAddress ip,int port);
    protected abstract ProxyMessage formMessage(int cmd,String host,int port)
@@ -334,7 +346,7 @@ public abstract class Proxy{
          throw se;
       }
    }
-
+   
    protected ProxyMessage bind(InetAddress ip,int port)
              throws SocksException{
       try{

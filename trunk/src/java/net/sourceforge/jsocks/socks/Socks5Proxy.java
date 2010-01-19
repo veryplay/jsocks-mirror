@@ -72,6 +72,13 @@ public class Socks5Proxy extends Proxy implements Cloneable{
 //Public instance methods
 //========================
 
+  /**
+     set the local socket port
+   */
+  public void setLocalSocketPort(int portNum) {
+    this.localSocketPort = portNum;
+  }
+
 
    /**
     * Wether to resolve address locally or to let proxy do so.
@@ -151,6 +158,7 @@ public class Socks5Proxy extends Proxy implements Cloneable{
        copy.directHosts = this.directHosts;
        copy.chainProxy = this.chainProxy;
        copy.resolveAddrLocally = this.resolveAddrLocally;
+       copy.localSocketPort = this.localSocketPort;
        return copy;
     }
    /**
