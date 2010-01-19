@@ -163,6 +163,14 @@ public class SocksSocket extends Socket{
    }
 
    /**
+    * when https needs socket, *somewhere* in its flow, it calls this method
+    * to make sure it has a connected socket.
+    */
+   public boolean isConnected() {
+     return proxy.proxySocket.isConnected();
+   }
+   
+   /**
     * Same as Socket
     */
    public void close() throws IOException{
@@ -222,7 +230,15 @@ public class SocksSocket extends Socket{
    public int getLocalPort(){
       return localPort;
    }
-
+   
+   /** the following returns what the Socket returns for getLocalPort()
+    * 
+    * @return int returns what the Socket returns for getLocalPort()
+    */
+   public int getLocalSocketPort() {
+     return proxy.getLocalSocketPort();
+   }
+   
    /**
     * Get address assigned by proxy to make a remote connection,
     * it might be different from the host specified for the proxy.
